@@ -40,7 +40,6 @@ export default {
   },
   methods: {
     handleClick(state) {
-      console.log("ciao");
       this.callBackLesson(this.index, toRaw(this.item),state);
     }
   }

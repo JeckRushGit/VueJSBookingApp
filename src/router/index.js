@@ -25,7 +25,7 @@ const routes = [
     {
         name : 'calendar',
         path: '/calendar',
-        meta: {auth : true},
+
         component: () => import('../pages/CalendarPage')
 
     }, {
@@ -42,7 +42,21 @@ const routes = [
             auth: true
         },
         component: () => import('../pages/SignOutPage.vue')
-    }
+    },{
+        path: '/adminremovelessons',
+        name: 'adminremovelessons',
+        meta: {
+            auth: true
+        },
+        component: () => import('../pages/AdminRemoveLessons.vue')
+    },{
+        path: '/addteachingspage',
+        name: 'addteachingspage',
+        meta: {
+            auth: true
+        },
+        component: () => import('../pages/AddTeachingsPage.vue')
+    },
 ]
 
 const router = createRouter({

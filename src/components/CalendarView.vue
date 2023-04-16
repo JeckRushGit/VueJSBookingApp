@@ -19,7 +19,7 @@
       </tr>
     </tbody>
   </table>
-  <CalendarPopUp v-if="isPopUpOpen" :call-back-close-pop-up="closePopUp" :selected-professor="selectedProfessor" :selected-course-titol="selectedCourseTitol" :selected-day="selectedDay" :selected-hour="selectedHour" :selected-month="selectedMonth" :selected-cell="selectedCell" :call-back-open-feed-back="opencloseFeedBackPopUp" :call-back-feed-back-message="setFeedBackMessage"/>
+  <CalendarPopUp v-if="isPopUpOpen && user && user.role === 'Client'" :call-back-close-pop-up="closePopUp" :selected-professor="selectedProfessor" :selected-course-titol="selectedCourseTitol" :selected-day="selectedDay" :selected-hour="selectedHour" :selected-month="selectedMonth" :selected-cell="selectedCell" :call-back-open-feed-back="opencloseFeedBackPopUp" :call-back-feed-back-message="setFeedBackMessage"/>
   <FeedBackPopUp v-if="isPopUpFeedBackOpen && !isPopUpOpen" :stringalert="feedBackMessage" :call-back-close-pop-up="opencloseFeedBackPopUp" :teleport-tag="'#calendarpopup'"/>
 </template>
 
@@ -60,10 +60,12 @@ export default {
       selectedCourseTitol : null,
       selectedCell : null,
       feedBackMessage : '',
+      user : null
     }
   },
 
   created() {
+    this.user = this.$store.getters.userdata;
     this.calendarLogic(toRaw(this.data));
   },
 

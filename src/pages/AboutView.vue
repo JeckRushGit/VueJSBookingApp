@@ -1,22 +1,27 @@
 <template>
-  <div class="d-flex flex-row">
-    <div class="my-spacer"></div>
-    <div class="inner-container d-flex mt-5 align-items-center flex-column">
-      <template v-if="userdata">
-        <h1>Profile page</h1>
-        <div class="mt-5">
-          <p>Email : {{ userdata.email }}</p>
-          <p>Name : {{ userdata.name }}</p>
-          <p>Surname : {{ userdata.surname }}</p>
-          <p>Birthday : {{ userdata.birthday }}</p>
-          <p>Profession : {{ userdata.profession }}</p>
-        </div>
-      </template>
-      <template v-else>
-        <LoadingCircle/>
-      </template>
+  <div v-if="!offline">
+    <div class="d-flex flex-row">
+      <div class="my-spacer"></div>
+      <div class="inner-container d-flex mt-5 align-items-center flex-column">
+        <template v-if="userdata">
+          <h1>Profile page</h1>
+          <div class="mt-5">
+            <p>Email : {{ userdata.email }}</p>
+            <p>Name : {{ userdata.name }}</p>
+            <p>Surname : {{ userdata.surname }}</p>
+            <p>Birthday : {{ userdata.birthday }}</p>
+            <p>Profession : {{ userdata.profession }}</p>
+          </div>
+        </template>
+        <template v-else>
+          <LoadingCircle/>
+        </template>
+      </div>
+      <div class="my-spacer"></div>
     </div>
-    <div class="my-spacer"></div>
+  </div>
+  <div v-else>
+    <p class="m-1">Service not available, try again later</p>
   </div>
 </template>
 
@@ -34,7 +39,8 @@ export default {
   },
   data() {
     return {
-      userdata: null
+      userdata: null,
+      offline : false
     }
   },
   async created() {
@@ -42,7 +48,13 @@ export default {
       const response = await axios.get('ServletGetUserInfo');
       this.userdata = response.data;
     } catch (e) {
-      this.$handle_session_expired()
+      if(e.response){
+        if(e.response.status === 401){
+          this.$handle_session_expired()
+        }
+      }else{
+        this.offline = true;
+      }
     }
   }
 }

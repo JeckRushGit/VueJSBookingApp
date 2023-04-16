@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg bg-body-tertiary " style="background-color: #3D5A80">
     <div class="container-fluid">
-      <a id="white-text" class="navbar-brand" href="#">Book it</a>
+      <a id="white-text" class="navbar-brand" href="#">BOOKIT</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
               aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -14,19 +14,31 @@
           <li class="nav-item" v-if="user">
             <router-link class="my-router-style" to="/about">About</router-link>
           </li>
-          <li class="nav-item" v-if="user">
+          <li class="nav-item">
             <router-link class="my-router-style" to="/calendar">Calendar</router-link>
           </li>
           <li class="nav-item" v-if="!user">
             <router-link class="my-router-style" to="/login">Login</router-link>
           </li>
-          <li class="nav-item" v-if="user">
+          <li class="nav-item" v-if="user && user.role === 'Client'">
             <router-link class="my-router-style" to="/agenda">Agenda</router-link>
+          </li>
+          <li class="nav-item" v-if="user && user.role === 'Administrator'">
+            <router-link class="my-router-style" to="/adminremovelessons">Remove lessons</router-link>
+          </li>
+          <li class="nav-item" v-if="user && user.role === 'Administrator'">
+            <router-link class="my-router-style" to="/addteachingspage">Add teachings</router-link>
           </li>
         </ul>
       </div>
     </div>
-    <button v-if="user" class="btn btn-primary" style="margin-right: 10px" @click="isModalOpen = true">Signout</button>
+
+    <button @click="isModalOpen = true" v-if="user" class="my-button" style="margin-right: 5px">
+      Sign out
+      <div class="arrow-wrapper">
+        <div class="arrow"></div>
+      </div>
+    </button>
   </nav>
   <router-view/>
   <Teleport to="#modal">
@@ -47,23 +59,22 @@
 import axios from "axios";
 
 
-
 export default {
 
   data() {
     return {
       isModalOpen: false
     }
-  },methods: {
+  }, methods: {
     onClickAway(event) {
       this.isModalOpen = false;
     },
-    async handleLogOut(){
+    async handleLogOut() {
       this.$store.commit('clear');
       localStorage.clear();
       try {
-        const response = await axios.post('ServletLogin',null,{params :{ action : 'logout'},withCredentials : true});
-      }catch (e){
+        const response = await axios.post('ServletLogin', null, {params: {action: 'logout'}, withCredentials: true});
+      } catch (e) {
         console.error(e);
       }
       this.isModalOpen = false
@@ -153,6 +164,68 @@ nav a.router-link-exact-active {
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
+}
+
+.my-button {
+  overflow: hidden;
+  white-space: nowrap;
+  --primary-color: #293241;
+  --secondary-color: #fff;
+  --hover-color: #111;
+  --arrow-width: 10px;
+  --arrow-stroke: 2px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 20px;
+  color: var(--secondary-color);
+  padding: 0.5em 0.8em;
+  background: var(--primary-color);
+  display: flex;
+  transition: 0.2s background;
+  align-items: center;
+  gap: 0.6em;
+  font-weight: bold;
+}
+
+.my-button .arrow-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.my-button .arrow {
+  margin-top: 1px;
+  width: var(--arrow-width);
+  background: var(--primary-color);
+  height: var(--arrow-stroke);
+  position: relative;
+  transition: 0.2s;
+}
+
+.my-button .arrow::before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  border: solid var(--secondary-color);
+  border-width: 0 var(--arrow-stroke) var(--arrow-stroke) 0;
+  display: inline-block;
+  top: -3px;
+  right: 3px;
+  transition: 0.2s;
+  padding: 3px;
+  transform: rotate(-45deg);
+}
+
+.my-button:hover {
+  background-color: var(--hover-color);
+}
+
+.my-button:hover .arrow {
+  background: var(--secondary-color);
+}
+
+.my-button:hover .arrow:before {
+  right: 0;
 }
 
 </style>
