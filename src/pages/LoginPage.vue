@@ -27,10 +27,22 @@
       <div class="my-spacer"></div>
 
     </div>
+
   </div>
   <div v-else>
     <p class="m-1">Service not available, try again later</p>
   </div>
+
+<!--  pop up credenziali errate-->
+  <Teleport to="#modal" v-if="wrongCredentials">
+    <div class="modal-bg d-flex justify-content-center align-items-center">
+      <div class="my-modal position-relative d-flex flex-column align-items-center" v-click-away="() => wrongCredentials = false">
+        <button type="button" class="btn-close m-2 position-absolute top-0 end-0" aria-label="Close"
+                @click="wrongCredentials = false"></button>
+        <p>Wrong email or password</p>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <script>
@@ -45,6 +57,7 @@ export default {
       email: '',
       password: '',
       offline : false,
+      wrongCredentials : false
     }
   },
   methods: {
@@ -63,7 +76,9 @@ export default {
         this.$router.push('/')
       } catch (e) {
         if(e.response){
-          console.error(e);
+          if(e.response.status === 401){
+            this.wrongCredentials = true;
+          }
         }else{
           this.offline = true;
         }

@@ -1,8 +1,14 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 import HomeView from '../pages/HomeView.vue'
 import {nextTick} from "vue";
+import Test from "@/pages/test.vue";
 
 const routes = [
+    {
+        path: '/test',
+        name: 'test',
+        component: Test
+    },
     {
         path: '/',
         name: 'home',
